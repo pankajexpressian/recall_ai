@@ -35,7 +35,11 @@ namespace recall_ai.api.Data
             // Seed UserDiaries
             modelBuilder.Entity<UserDiary>().HasData(
                 new UserDiary { DiaryId = 1, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
+                new UserDiary { DiaryId = 11, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
+                new UserDiary { DiaryId = 12, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
                 new UserDiary { DiaryId = 2, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
+                new UserDiary { DiaryId = 13, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
+                new UserDiary { DiaryId = 14, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
                 new UserDiary { DiaryId = 3, UserId = 3, Note = "Feeling a bit tired.", InsertedOn = DateTime.Now },
                 new UserDiary { DiaryId = 4, UserId = 4, Note = "Excited about the upcoming event!", InsertedOn = DateTime.Now },
                 new UserDiary { DiaryId = 5, UserId = 5, Note = "Feeling stressed about work.", InsertedOn = DateTime.Now },
