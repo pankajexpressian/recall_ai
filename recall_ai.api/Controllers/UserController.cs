@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using recall_ai.api.Data;
-using recall_ai.api.Models; // Ensure this namespace includes your User model
-using System.Linq;
-using System.Threading.Tasks;
+using recall_ai.api.Models;
 
 namespace recall_ai.api.Controllers
 {
@@ -59,11 +57,9 @@ namespace recall_ai.api.Controllers
             var existingUser = await _dbContext.Users.FindAsync(userid);
             if (existingUser == null) return NotFound();
 
-            // Update properties as necessary
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
             existingUser.Email = user.Email; 
-            // Add more properties as needed
 
             await _dbContext.SaveChangesAsync();
             return NoContent(); 
@@ -79,7 +75,7 @@ namespace recall_ai.api.Controllers
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
 
-            return NoContent(); // Indicates that the deletion was successful
+            return NoContent(); 
         }
     }
 }

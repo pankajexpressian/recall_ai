@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using recall_ai.api.Data;
-using recall_ai.api.Models; // Assuming your models are in this namespace
-using System.Linq;
-using System.Threading.Tasks;
+using recall_ai.api.Models; 
 
 namespace recall_ai.api.Controllers
 {
     [ApiController]
-    [Route("api/users/{userid}/diaries")] // Set a base route for diaries
+    [Route("api/users/{userid}/diaries")] 
     public class UserDiaryController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
@@ -77,7 +75,7 @@ namespace recall_ai.api.Controllers
             _dbContext.UserDiaries.Remove(diary);
             await _dbContext.SaveChangesAsync();
 
-            return NoContent(); // Indicates that the deletion was successful
+            return NoContent(); 
         }
     }
 }
