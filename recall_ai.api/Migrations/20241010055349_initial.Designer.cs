@@ -11,8 +11,8 @@ using recall_ai.api.Data;
 namespace recall_ai.api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240924145847_seed-sample-data")]
-    partial class seedsampledata
+    [Migration("20241010055349_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,11 +30,9 @@ namespace recall_ai.api.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
@@ -123,9 +121,15 @@ namespace recall_ai.api.Migrations
                     b.Property<DateTime>("InsertedOn")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Mood")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("NoteDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("UserId")
@@ -139,71 +143,127 @@ namespace recall_ai.api.Migrations
                         new
                         {
                             DiaryId = 1,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8199),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5465),
+                            Mood = 0,
                             Note = "Feeling great today!",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5465),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            DiaryId = 11,
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5468),
+                            Mood = 1,
+                            Note = "Feeling great today!",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5469),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            DiaryId = 12,
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5470),
+                            Mood = 2,
+                            Note = "Feeling great today!",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5471),
                             UserId = 1
                         },
                         new
                         {
                             DiaryId = 2,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8201),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5473),
+                            Mood = 0,
                             Note = "Had a productive day.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5473),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            DiaryId = 13,
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5475),
+                            Mood = 0,
+                            Note = "Had a productive day.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5475),
+                            UserId = 2
+                        },
+                        new
+                        {
+                            DiaryId = 14,
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5477),
+                            Mood = 1,
+                            Note = "Had a productive day.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5477),
                             UserId = 2
                         },
                         new
                         {
                             DiaryId = 3,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8202),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5479),
+                            Mood = 0,
                             Note = "Feeling a bit tired.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5480),
                             UserId = 3
                         },
                         new
                         {
                             DiaryId = 4,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8204),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5481),
+                            Mood = 0,
                             Note = "Excited about the upcoming event!",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5482),
                             UserId = 4
                         },
                         new
                         {
                             DiaryId = 5,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8205),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5484),
+                            Mood = 2,
                             Note = "Feeling stressed about work.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5485),
                             UserId = 5
                         },
                         new
                         {
                             DiaryId = 6,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8207),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5487),
+                            Mood = 0,
                             Note = "Enjoyed a nice walk.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5487),
                             UserId = 6
                         },
                         new
                         {
                             DiaryId = 7,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8208),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5489),
+                            Mood = 1,
                             Note = "Feeling anxious.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5490),
                             UserId = 7
                         },
                         new
                         {
                             DiaryId = 8,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8209),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5492),
+                            Mood = 0,
                             Note = "Had a fun day out.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5492),
                             UserId = 8
                         },
                         new
                         {
                             DiaryId = 9,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8210),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5494),
+                            Mood = 0,
                             Note = "Feeling motivated to start new projects.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5495),
                             UserId = 9
                         },
                         new
                         {
                             DiaryId = 10,
-                            InsertedOn = new DateTime(2024, 9, 24, 20, 28, 46, 865, DateTimeKind.Local).AddTicks(8212),
+                            InsertedOn = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5497),
+                            Mood = 0,
                             Note = "Enjoying some quiet time.",
+                            NoteDate = new DateTime(2024, 10, 10, 11, 23, 49, 169, DateTimeKind.Local).AddTicks(5497),
                             UserId = 10
                         });
                 });
