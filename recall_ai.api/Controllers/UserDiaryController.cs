@@ -14,12 +14,13 @@ namespace recall_ai.api.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly TextEmbeddingService _embeddingService;
         private readonly PineconeClient _pineconeClient;
-
-        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient)
+        private readonly OpenAiService _genAIService;
+        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient, OpenAiService genAIService)
         {
             _dbContext = dbContext;
             _embeddingService = embeddingService;
             _pineconeClient = pineconeClient;
+            _genAIService = genAIService;
         }
 
         // Get all diaries for a specific user
@@ -50,20 +51,25 @@ namespace recall_ai.api.Controllers
             await _dbContext.UserDiaries.AddAsync(diary);
             await _dbContext.SaveChangesAsync();
 
+            var sentences = new[] { diary.Note };
 
             // Generate embedding for the note
-            var embedding = await _embeddingService.GetTextEmbedding(diary.Note);
+            List<List<float>> embeddings = await _embeddingService.GetTextEmbedding(sentences);
 
-            // Create metadata to store with the vector
-            var metadata = new Dictionary<string, string>
+            // Since GetTextEmbedding returns a List<List<float>>, you need to get the first embedding if it's a single note
+            if (embeddings != null && embeddings.Count > 0)
             {
-                { "UserId", diary.UserId.ToString() },
-                { "DiaryId", diary.DiaryId.ToString() },
-                { "Date", diary.InsertedOn.ToString("o") }
-            };
+                // Create metadata to store with the vector
+                var metadata = new Dictionary<string, string>
+    {
+        { "UserId", diary.UserId.ToString() },
+        { "DiaryId", diary.DiaryId.ToString() },
+        { "Date", diary.InsertedOn.ToString("o") }
+    };
 
-            // Index the embedding in Pinecone
-            await _pineconeClient.IndexVector(diary.DiaryId.ToString(), embedding, metadata);
+                // Index the embedding in Pinecone; assuming you want to index the first embedding
+                await _pineconeClient.IndexVector(diary.DiaryId.ToString(), embeddings[0], metadata);
+            }
             return CreatedAtAction(nameof(GetDiaryById), new { userid, diaryid = diary.DiaryId }, diary);
         }
 
@@ -99,25 +105,29 @@ namespace recall_ai.api.Controllers
         }
 
         [HttpGet("search-notes")]
-        public async Task<IActionResult> SearchNotes([FromQuery] string query, string userId)
+        public async Task<IActionResult> SearchNotes([FromQuery] string query, int userid)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (userid == 0)
             {
                 return Unauthorized("User is not authenticated");
             }
-
+            var sentences = new[] { query };
             // Generate embedding for the query
-            var queryEmbedding = await _embeddingService.GetTextEmbedding(query);
+            var queryEmbedding = await _embeddingService.GetTextEmbedding(sentences);
 
             // Search for similar notes in Pinecone for the current user
-           var searchResults = await _pineconeClient.SearchVector(queryEmbedding, userId);
+           var searchResults = await _pineconeClient.SearchVector(queryEmbedding[0], userid);
 
             // Fetch the matching DailyEntries from the database
             var notes = _dbContext.UserDiaries
-                .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId.ToString() == userId)
+                .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId == userid)
                 .ToList();
+            var combinedNotes = string.Join("\n", notes.Select(n => n.Note));
 
-            return Ok(notes);
+            // Call the Gen-AI model to rephrase the notes in a human-friendly way
+            var rephrasedNotes = await _genAIService.GenerateTextAsync(combinedNotes);
+
+            return Ok(new { OriginalNotes = notes, RephrasedNotes = rephrasedNotes });
         }
 
     }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using recall_ai.api.Core;
 using recall_ai.api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<TextEmbeddingService>();
+builder.Services.AddSingleton<PineconeClient>();
+builder.Services.AddSingleton<OpenAiService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

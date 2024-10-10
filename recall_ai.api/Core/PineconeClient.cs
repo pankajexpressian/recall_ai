@@ -31,9 +31,14 @@ namespace recall_ai.api.Core
         }
 
         // Index a vector into Pinecone
-        public async Task IndexVector(string vectorId, float[] embedding, Dictionary<string, string> metadata)
+        public async Task IndexVector(string vectorId, List<float> embedding, Dictionary<string, string> metadata)
         {
-            var url = $"https://{_indexName}-{_environment}.pinecone.io/vectors/upsert";
+            // Ensure embedding has the correct dimensions
+            if (embedding.Count != 1024) // Adjust based on your embedding model
+            {
+                throw new ArgumentException("Embedding dimension does not match the index dimension.");
+            }
+            var url = "https://multilingual-e5-large-anftm49.svc.aped-4627-b74a.pinecone.io/vectors/upsert";
             var body = new
             {
                 vectors = new[]
@@ -42,25 +47,35 @@ namespace recall_ai.api.Core
                 {
                     id = vectorId,
                     values = embedding,
-                    metadata = metadata
+                    metadata
                 }
             }
             };
 
             var request = CreateRequest(HttpMethod.Post, url, body);
+            // Debug: Log the request body
+            Console.WriteLine("Request Body: " + JsonConvert.SerializeObject(body));
             var response = await _httpClient.SendAsync(request);
+
+            // Check the response
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error: {response.StatusCode}, Content: {errorContent}");
+                throw new Exception($"Failed to index vector: {response.StatusCode} - {errorContent}");
+            }
             response.EnsureSuccessStatusCode();
         }
 
         // Search for similar vectors
-        public async Task<List<string>> SearchVector(float[] embedding, string userId, int topK = 5)
+        public async Task<List<string>> SearchVector(List<float> embedding, int userId, int topK = 5)
         {
-            var url = $"https://{_indexName}-{_environment}.pinecone.io/query";
+            var url = "https://multilingual-e5-large-anftm49.svc.aped-4627-b74a.pinecone.io/query";
             var body = new
             {
                 vector = embedding,
                 topK = topK,
-                filter = new { UserId = userId }  // Filter results by UserId
+                //filter = new { UserId = userId }  // Filter results by UserId
             };
 
             var request = CreateRequest(HttpMethod.Post, url, body);
