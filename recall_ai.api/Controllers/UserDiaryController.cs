@@ -1,19 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using recall_ai.api.Core;
 using recall_ai.api.Data;
-using recall_ai.api.Models; 
+using recall_ai.api.Models;
+using PineconeClient = recall_ai.api.Core.PineconeClient;
 
 namespace recall_ai.api.Controllers
 {
     [ApiController]
-    [Route("api/users/{userid}/diaries")] 
+    [Route("api/users/{userid}/diaries")]
     public class UserDiaryController : ControllerBase
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly TextEmbeddingService _embeddingService;
+        private readonly PineconeClient _pineconeClient;
 
-        public UserDiaryController(ApplicationDbContext dbContext)
+        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient)
         {
             _dbContext = dbContext;
+            _embeddingService = embeddingService;
+            _pineconeClient = pineconeClient;
         }
 
         // Get all diaries for a specific user
@@ -44,6 +50,20 @@ namespace recall_ai.api.Controllers
             await _dbContext.UserDiaries.AddAsync(diary);
             await _dbContext.SaveChangesAsync();
 
+
+            // Generate embedding for the note
+            var embedding = await _embeddingService.GetTextEmbedding(diary.Note);
+
+            // Create metadata to store with the vector
+            var metadata = new Dictionary<string, string>
+            {
+                { "UserId", diary.UserId.ToString() },
+                { "DiaryId", diary.DiaryId.ToString() },
+                { "Date", diary.InsertedOn.ToString("o") }
+            };
+
+            // Index the embedding in Pinecone
+            await _pineconeClient.IndexVector(diary.DiaryId.ToString(), embedding, metadata);
             return CreatedAtAction(nameof(GetDiaryById), new { userid, diaryid = diary.DiaryId }, diary);
         }
 
@@ -58,10 +78,10 @@ namespace recall_ai.api.Controllers
             if (existingDiary == null || existingDiary.UserId != userid)
                 return NotFound();
 
-            existingDiary.Note = diary.Note; 
+            existingDiary.Note = diary.Note;
 
             await _dbContext.SaveChangesAsync();
-            return NoContent(); 
+            return NoContent();
         }
 
         // Delete a diary
@@ -75,7 +95,30 @@ namespace recall_ai.api.Controllers
             _dbContext.UserDiaries.Remove(diary);
             await _dbContext.SaveChangesAsync();
 
-            return NoContent(); 
+            return NoContent();
         }
+
+        [HttpGet("search-notes")]
+        public async Task<IActionResult> SearchNotes([FromQuery] string query, string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User is not authenticated");
+            }
+
+            // Generate embedding for the query
+            var queryEmbedding = await _embeddingService.GetTextEmbedding(query);
+
+            // Search for similar notes in Pinecone for the current user
+           var searchResults = await _pineconeClient.SearchVector(queryEmbedding, userId);
+
+            // Fetch the matching DailyEntries from the database
+            var notes = _dbContext.UserDiaries
+                .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId.ToString() == userId)
+                .ToList();
+
+            return Ok(notes);
+        }
+
     }
 }
