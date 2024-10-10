@@ -34,20 +34,20 @@ namespace recall_ai.api.Data
 
             // Seed UserDiaries
             modelBuilder.Entity<UserDiary>().HasData(
-                new UserDiary { DiaryId = 1, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 11, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 12, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 2, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 13, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 14, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 3, UserId = 3, Note = "Feeling a bit tired.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 4, UserId = 4, Note = "Excited about the upcoming event!", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 5, UserId = 5, Note = "Feeling stressed about work.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 6, UserId = 6, Note = "Enjoyed a nice walk.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 7, UserId = 7, Note = "Feeling anxious.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 8, UserId = 8, Note = "Had a fun day out.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 9, UserId = 9, Note = "Feeling motivated to start new projects.", InsertedOn = DateTime.Now },
-                new UserDiary { DiaryId = 10, UserId = 10, Note = "Enjoying some quiet time.", InsertedOn = DateTime.Now }
+                new UserDiary { DiaryId = 1, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now, Mood=Mood.Happy, NoteDate=DateTime.Now},
+                new UserDiary { DiaryId = 11, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now, Mood = Mood.Sad, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 12, UserId = 1, Note = "Feeling great today!", InsertedOn = DateTime.Now, Mood = Mood.Neutral, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 2, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 13, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 14, UserId = 2, Note = "Had a productive day.", InsertedOn = DateTime.Now, Mood = Mood.Sad, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 3, UserId = 3, Note = "Feeling a bit tired.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 4, UserId = 4, Note = "Excited about the upcoming event!", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 5, UserId = 5, Note = "Feeling stressed about work.", InsertedOn = DateTime.Now, Mood = Mood.Neutral, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 6, UserId = 6, Note = "Enjoyed a nice walk.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 7, UserId = 7, Note = "Feeling anxious.", InsertedOn = DateTime.Now, Mood = Mood.Sad, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 8, UserId = 8, Note = "Had a fun day out.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 9, UserId = 9, Note = "Feeling motivated to start new projects.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now },
+                new UserDiary { DiaryId = 10, UserId = 10, Note = "Enjoying some quiet time.", InsertedOn = DateTime.Now, Mood = Mood.Happy, NoteDate = DateTime.Now }
             );
         }
 
