@@ -1,0 +1,15 @@
+runtime: nodejs22
+instance_class: F1
+handlers:
+  - url: /
+    static_files: dist/angular-15-example/index.html
+    upload: dist/angular-15-example/index.html
+
+  - url: /(.*\..+)
+    static_files: dist/angular-15-example/\1
+    upload: dist/angular-15-example/(.*\..+)
+
+   # Redirect all other requests to index.html (Angular will handle routing)
+  - url: /.*
+    static_files: dist/angular-15-example/index.html
+    upload: dist/angular-15-example/index.html
