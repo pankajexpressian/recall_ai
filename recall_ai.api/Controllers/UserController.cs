@@ -34,6 +34,16 @@ namespace recall_ai.api.Controllers
             return Ok(user);
         }
 
+        //[HttpGet("{userid}", Name = "GetUserByEmail")]
+        //public async Task<ActionResult<User>> GetUserById(string email)
+        //{
+        //    email = email.Trim().ToLower();
+        //    var user = await _dbContext.Users.FirstOrDefaultAsync(a => a.Email.ToLower() == email);
+        //    if (user == null) return NotFound();
+
+        //    return Ok(user);
+        //}
+
         // Create a new user
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] User user)
@@ -59,10 +69,10 @@ namespace recall_ai.api.Controllers
 
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
-            existingUser.Email = user.Email; 
+            existingUser.Email = user.Email;
 
             await _dbContext.SaveChangesAsync();
-            return NoContent(); 
+            return NoContent();
         }
 
         // Delete a user
@@ -75,7 +85,7 @@ namespace recall_ai.api.Controllers
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
 
-            return NoContent(); 
+            return NoContent();
         }
     }
 }
