@@ -1,13 +1,20 @@
 ﻿import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { map, finalize, catchError } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
 import { Account } from '@app/_models';
 
 const baseUrl = `${environment.apiUrl}/users`;
+
+type User = {
+    email: string;
+    firstName: string;
+    lastName: string;
+    userId: number;
+};
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -26,18 +33,32 @@ export class AccountService {
         return this.accountSubject.value;
     }
 
+    public set accountValue(value) {
+        this.accountSubject.next(value);
+    }
+
     login(email: string, password: string) {
-        return this.http.post<any>(`${baseUrl}/authenticate`, { email, password }, { withCredentials: true })
-            .pipe(map(account => {
-                this.accountSubject.next(account);
-                this.startRefreshTokenTimer();
-                return account;
-            }));
+        return this.http.get<User[]>(baseUrl)
+            .pipe(
+                map(users => {
+                    const loggedInUser = users.find(user => user.email === email.toLowerCase());
+                    if (loggedInUser) {
+                        this.accountSubject.next(loggedInUser);
+                        // this.startRefreshTokenTimer();
+                        return loggedInUser;
+                    }
+                    throw { message: 'User not found or invalid credentials' };
+                }),
+                catchError(error => {
+                    // Catch any errors from the HTTP request and propagate them
+                    return throwError(() => ({ message: error.message || 'Something went wrong during login' }));
+                })
+            );
     }
 
     logout() {
-        this.http.post<any>(`${baseUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
-        this.stopRefreshTokenTimer();
+        // this.http.post<any>(`${baseUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
+        // this.stopRefreshTokenTimer();
         this.accountSubject.next(null);
         this.router.navigate(['/account/login']);
     }
@@ -52,7 +73,7 @@ export class AccountService {
     }
 
     register(account: Account) {
-        return this.http.post(`${baseUrl}/register`, account);
+        return this.http.post(`${baseUrl}`, account);
     }
 
     verifyEmail(token: string) {
