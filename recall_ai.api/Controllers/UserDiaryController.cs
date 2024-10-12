@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using recall_ai.api.Core;
 using recall_ai.api.Data;
 using recall_ai.api.Models;
+using System.Text.RegularExpressions;
 using PineconeClient = recall_ai.api.Core.PineconeClient;
 
 namespace recall_ai.api.Controllers
@@ -59,14 +60,13 @@ namespace recall_ai.api.Controllers
             // Since GetTextEmbedding returns a List<List<float>>, you need to get the first embedding if it's a single note
             if (embeddings != null && embeddings.Count > 0)
             {
-                // Create metadata to store with the vector
-                var metadata = new Dictionary<string, string>
-    {
-        { "UserId", diary.UserId.ToString() },
-        { "DiaryId", diary.DiaryId.ToString() },
-        { "Date", diary.InsertedOn.ToString("o") }
-    };
 
+                var metadata = new Dictionary<string, object>
+        {
+            { "userId", diary.UserId },
+            { "noteDate", diary.NoteDate.ToString("yyyy-MM-dd") },  // Store as string if comparing later as string
+            { "mood", diary.Mood.ToString() }
+        };
                 // Index the embedding in Pinecone; assuming you want to index the first embedding
                 await _pineconeClient.IndexVector(diary.DiaryId.ToString(), embeddings[0], metadata);
             }
@@ -111,6 +111,9 @@ namespace recall_ai.api.Controllers
             {
                 return Unauthorized("User is not authenticated");
             }
+            // Extract mood and date from the query
+            (string mood, DateTime? date) = ExtractMoodAndDate(query);
+
             var sentences = new[] { query };
             // Generate embedding for the query
             var queryEmbedding = await _embeddingService.GetTextEmbedding(sentences);
@@ -121,13 +124,38 @@ namespace recall_ai.api.Controllers
             // Fetch the matching DailyEntries from the database
             var notes = _dbContext.UserDiaries
                 .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId == userid)
+                .Select(n=> n.Note)
                 .ToList();
-            var combinedNotes = string.Join("\n", notes.Select(n => n.Note));
-
+            if (notes.Count >= 1)
+            {
+                notes.Add("String");
+            } else
+            {
+                notes.Add("No result found");
+                notes.Add("No result found");
+            }
             // Call the Gen-AI model to rephrase the notes in a human-friendly way
-            var rephrasedNotes = await _genAIService.GenerateTextAsync(combinedNotes);
+            var rephrasedNotes = await _embeddingService.SearchNotesAsync(query, notes);
 
             return Ok(new { OriginalNotes = notes, RephrasedNotes = rephrasedNotes });
+        }
+
+        private (string mood, DateTime? date) ExtractMoodAndDate(string query)
+        {
+            // Extract mood using a predefined set of moods
+            string[] moods = Enum.GetNames(typeof(Mood)); // Happy, Sad, etc.
+            string mood = moods.FirstOrDefault(m => query.Contains(m, StringComparison.OrdinalIgnoreCase));
+
+            // Use regex to find a date in the query
+            DateTime date;
+            Regex dateRegex = new Regex(@"\b(\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\w+\s\d{1,2},\s\d{4})\b");
+            Match match = dateRegex.Match(query);
+            if (match.Success && DateTime.TryParse(match.Value, out date))
+            {
+                return (mood, date);
+            }
+
+            return (mood, null); // Return null if no date found
         }
 
     }

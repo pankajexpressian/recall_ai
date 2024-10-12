@@ -108,6 +108,42 @@ namespace recall_ai.api.Core
         //    var result = JsonConvert.DeserializeObject<List<float>> (jsonResponse);
         //    return result.Embeddings;
         //}
+
+        public async Task<string> SearchNotesAsync(string query, List<string> diaryEntries)
+        {
+            var client = new HttpClient();
+            var url = "http://localhost:5000/search-notes";  // Make sure this matches your Python API address
+
+            var body = new
+            {
+                query,
+                diary_entries = diaryEntries,
+                huggingface_token = _huggingFaceApiKey
+            };
+            try
+            {
+                var jsonBody = JsonConvert.SerializeObject(body);
+                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                Console.WriteLine(jsonBody);
+
+                var response = await client.PostAsync(url, content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to get response: {response.StatusCode}");
+                }
+                response.EnsureSuccessStatusCode();
+
+                var result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception ex) // Catch all other exceptions
+            {
+                // Log the unexpected exception
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
+                return $"An unexpected error occurred: {ex.Message}";
+            }
+
+        }
     }
 
     public class EmbeddingResponse

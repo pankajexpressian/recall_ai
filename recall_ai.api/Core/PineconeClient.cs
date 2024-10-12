@@ -31,14 +31,14 @@ namespace recall_ai.api.Core
         }
 
         // Index a vector into Pinecone
-        public async Task IndexVector(string vectorId, List<float> embedding, Dictionary<string, string> metadata)
+        public async Task IndexVector(string vectorId, List<float> embedding, Dictionary<string, object> metadata)
         {
             // Ensure embedding has the correct dimensions
-            if (embedding.Count != 1024) // Adjust based on your embedding model
+            if (embedding.Count != 384) // Adjust based on your embedding model
             {
                 throw new ArgumentException("Embedding dimension does not match the index dimension.");
             }
-            var url = "https://multilingual-e5-large-anftm49.svc.aped-4627-b74a.pinecone.io/vectors/upsert";
+            var url = "https://aivolution-anftm49.svc.aped-4627-b74a.pinecone.io/vectors/upsert";
             var body = new
             {
                 vectors = new[]
@@ -68,18 +68,34 @@ namespace recall_ai.api.Core
         }
 
         // Search for similar vectors
-        public async Task<List<string>> SearchVector(List<float> embedding, int userId, int topK = 5)
+        public async Task<List<string>> SearchVector(List<float> embedding, int userId, int topK = 5, DateTime? noteDate = null)
         {
-            var url = "https://multilingual-e5-large-anftm49.svc.aped-4627-b74a.pinecone.io/query";
+            var url = "https://aivolution-anftm49.svc.aped-4627-b74a.pinecone.io/query";
+           
+            // Construct the filter
+            var filter = new Dictionary<string, object>
+    {
+        { "userId", userId }
+    };
+
+            if (noteDate.HasValue)
+            {
+                filter.Add("noteDate", noteDate.Value.ToString("yyyy-MM-dd")); // Ensure the format matches the metadata
+            }
             var body = new
             {
                 vector = embedding,
-                topK = topK,
-                //filter = new { UserId = userId }  // Filter results by UserId
+                topK,
+                filter
             };
-
+           
             var request = CreateRequest(HttpMethod.Post, url, body);
             var response = await _httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Pinecone Query failed: {errorContent}");
+            }
             response.EnsureSuccessStatusCode();
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -87,41 +103,41 @@ namespace recall_ai.api.Core
             return result.Matches.Select(match => match.Id).ToList();
         }
 
-        public async Task<float[]> GetTextEmbedding(string text)
-        {
-            // Hugging Face API Key (replace with your actual key)
-            string apiKey = "your-huggingface-api-key";
+        //public async Task<float[]> GetTextEmbedding(string text)
+        //{
+        //    // Hugging Face API Key (replace with your actual key)
+        //    string apiKey = "your-huggingface-api-key";
 
-            // The model you want to use (e.g., a Llama-based model or any other Hugging Face model that generates embeddings)
-            string model = "sentence-transformers/all-MiniLM-L6-v2";  // Example of a sentence transformer model
+        //    // The model you want to use (e.g., a Llama-based model or any other Hugging Face model that generates embeddings)
+        //    string model = "sentence-transformers/all-MiniLM-L6-v2";  // Example of a sentence transformer model
 
-            var url = $"https://api-inference.huggingface.co/models/{model}";
+        //    var url = $"https://api-inference.huggingface.co/models/{model}";
 
-            // Create the HTTP request
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+        //    // Create the HTTP request
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
 
-                // Create the request body
-                var requestBody = new
-                {
-                    inputs = text
-                };
+        //        // Create the request body
+        //        var requestBody = new
+        //        {
+        //            inputs = text
+        //        };
 
-                var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+        //        var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
 
-                // Make the POST request to Hugging Face API
-                var response = await client.PostAsync(url, content);
-                response.EnsureSuccessStatusCode();
+        //        // Make the POST request to Hugging Face API
+        //        var response = await client.PostAsync(url, content);
+        //        response.EnsureSuccessStatusCode();
 
-                // Read and parse the response
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var embeddingResponse = JsonConvert.DeserializeObject<List<List<float>>>(jsonResponse);
+        //        // Read and parse the response
+        //        var jsonResponse = await response.Content.ReadAsStringAsync();
+        //        var embeddingResponse = JsonConvert.DeserializeObject<List<List<float>>>(jsonResponse);
 
-                // Assuming the response contains a single embedding vector
-                return embeddingResponse[0].ToArray();
-            }
-        }
+        //        // Assuming the response contains a single embedding vector
+        //        return embeddingResponse[0].ToArray();
+        //    }
+        //}
 
     }
 
