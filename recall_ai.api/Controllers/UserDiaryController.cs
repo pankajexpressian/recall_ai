@@ -107,44 +107,74 @@ namespace recall_ai.api.Controllers
         [HttpGet("search-notes")]
         public async Task<IActionResult> SearchNotes([FromQuery] string query, int userid)
         {
-            if (userid == 0)
+            // Validate the user ID
+            if (userid <= 0)
             {
                 return Unauthorized("User is not authenticated");
             }
-            // Extract mood and date from the query
-            (string mood, DateTime? date) = ExtractMoodAndDate(query);
 
-            var sentences = new[] { query };
+            // Extract mood and date from the query
+            (Mood? mood, DateTime? date) = ExtractMoodAndDate(query);
+
+            // Assuming mood is of type Mood? (nullable Mood)
+            var results = await _dbContext.UserDiaries
+                .Where(d => d.UserId == userid &&
+                            (!date.HasValue || d.NoteDate.Date == date.Value.Date) &&
+                            d.Mood == mood) // Compare directly with enum
+                .ToListAsync();
+
+            if (!results.Any())
+            {
+                return NotFound("No notes found matching your query.");
+            }
+
             // Generate embedding for the query
+            var sentences = new[] { query };
             var queryEmbedding = await _embeddingService.GetTextEmbedding(sentences);
 
             // Search for similar notes in Pinecone for the current user
-           var searchResults = await _pineconeClient.SearchVector(queryEmbedding[0], userid);
+            var searchResults = await _pineconeClient.SearchVector(queryEmbedding[0], userid);
 
-            // Fetch the matching DailyEntries from the database
-            var notes = _dbContext.UserDiaries
+            // Fetch the matching diary entries from the database based on the search results
+            var notes = await _dbContext.UserDiaries
                 .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId == userid)
-                .Select(n=> n.Note)
-                .ToList();
-            if (notes.Count >= 1)
+                .Select(n => new { n.Note, n.NoteDate, n.Mood })
+                .ToListAsync();
+            var rephraseContext = new List<string>();
+            foreach (var note in notes)
             {
-                notes.Add("String");
-            } else
-            {
-                notes.Add("No result found");
-                notes.Add("No result found");
+                // Generate mood description
+                string moodDescription = note.Mood != Mood.None ? note.Mood.ToString() : "no specific mood";
+
+                // Add two entries for each note to rephrase context
+                rephraseContext.Add($"On {note.NoteDate.ToShortDateString()}, you felt {moodDescription}.");
+                rephraseContext.Add($"You wrote: '{note.Note}'");
             }
+
+            // Check if rephraseContext has entries before proceeding
+            if (!rephraseContext.Any())
+            {
+                return BadRequest("No valid notes available for rephrasing.");
+            }
+
             // Call the Gen-AI model to rephrase the notes in a human-friendly way
-            var rephrasedNotes = await _embeddingService.SearchNotesAsync(query, notes);
+            var rephrasedNotes = await _embeddingService.SearchNotesAsync(query, rephraseContext);
 
             return Ok(new { OriginalNotes = notes, RephrasedNotes = rephrasedNotes });
         }
 
-        private (string mood, DateTime? date) ExtractMoodAndDate(string query)
+        private (Mood? mood, DateTime? date) ExtractMoodAndDate(string query)
         {
             // Extract mood using a predefined set of moods
-            string[] moods = Enum.GetNames(typeof(Mood)); // Happy, Sad, etc.
-            string mood = moods.FirstOrDefault(m => query.Contains(m, StringComparison.OrdinalIgnoreCase));
+            Mood? mood = null;
+            foreach (Mood m in Enum.GetValues(typeof(Mood)))
+            {
+                if (query.Contains(m.ToString(), StringComparison.OrdinalIgnoreCase))
+                {
+                    mood = m;
+                    break;
+                }
+            }
 
             // Use regex to find a date in the query
             DateTime date;
@@ -157,6 +187,7 @@ namespace recall_ai.api.Controllers
 
             return (mood, null); // Return null if no date found
         }
+
 
     }
 }
