@@ -2,7 +2,7 @@
 <div class="card-body">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="row">
-            <div class="mb-3 col-2">
+            <!-- <div class="mb-3 col-2">
                 <label class="form-label">Title</label>
                 <select formControlName="title" class="form-select" [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
                     <option value=""></option>
@@ -14,7 +14,7 @@
                 <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
                     <div *ngIf="f.title.errors.required">Title is required</div>
                 </div>
-            </div>
+            </div> -->
             <div class="mb-3 col-5">
                 <label class="form-label">First Name</label>
                 <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
@@ -38,7 +38,7 @@
                 <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div class="mb-3 col">
                 <label class="form-label">Password</label>
                 <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
@@ -55,7 +55,7 @@
                     <div *ngIf="f.confirmPassword.errors.mustMatch">Passwords must match</div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="mb-3 form-check">
             <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" class="form-check-input" [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
             <label for="acceptTerms" class="form-check-label">Accept Terms & Conditions</label>

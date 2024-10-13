@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         this.form = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required]
+            password: ['', /** Validators.required */]
         });
     }
 
@@ -50,7 +50,8 @@ export class LoginComponent implements OnInit {
                     this.router.navigateByUrl(returnUrl);
                 },
                 error: error => {
-                    this.alertService.error(error);
+                    console.log('error', error);
+                    this.alertService.error(error.message);
                     this.submitting = false;
                 }
             });

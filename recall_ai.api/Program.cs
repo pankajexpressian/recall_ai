@@ -17,7 +17,19 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin() // Replace with your frontend URL WithOrigins("http://localhost:4200")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 var app = builder.Build();
+
+// Use CORS
+app.UseCors("AllowAll");
 
 using (var scope = app.Services.CreateScope())
 {

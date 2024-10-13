@@ -6,12 +6,16 @@ import { AuthGuard } from './_helpers';
 import { Role } from './_models';
 
 const accountModule = () => import('./account/account.module').then(x => x.AccountModule);
+const diaryModule = () => import('./diary/diary.module').then(x => x.DiaryModule);
+const chatModule = () => import('./chat/chat.module').then(x => x.ChatModule);
 const adminModule = () => import('./admin/admin.module').then(x => x.AdminModule);
 const profileModule = () => import('./profile/profile.module').then(x => x.ProfileModule);
 
 const routes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'account', loadChildren: accountModule },
+    { path: 'diary', loadChildren: diaryModule, canActivate: [AuthGuard] },
+    { path: 'chat', loadChildren: chatModule, canActivate: [AuthGuard] },
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
     { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
 
