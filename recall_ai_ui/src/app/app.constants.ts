@@ -1,31 +1,31 @@
 export const MOODS = [
     {
       name: 'ANGER',
-      value: 0,
+      value: 1,
       color: 'orange',
       emoji: '😡'  // Angry face emoji
     },
     {
       name: 'DISGUST',
-      value: 1,
+      value: 2,
       color: 'green',
       emoji: '🤢'  // Nauseated face emoji
     },
     {
       name: 'FEAR',
-      value: 2,
+      value: 3,
       color: 'yellow',
       emoji: '😨'  // Fearful face emoji
     },
     {
       name: 'JOY',
-      value: 3,
+      value: 4,
       color: 'blue',
       emoji: '😊'  // Smiling face with smiling eyes emoji
     },
     {
       name: 'NEUTRAL',
-      value: 4,
+      value: 0,
       color: 'grey',
       emoji: '😐'  // Neutral face emoji
     },
