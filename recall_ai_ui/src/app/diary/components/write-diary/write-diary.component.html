@@ -1,1 +1,19 @@
-<p>write-diary works!</p>
+<form [formGroup]="form" class="container py-3">
+    <input type="date" formControlName="date" [value]="form.get('date')?.value">
+    <p class="mood-title">How are you feeling on this date? If you'd like to share, we'd love to hear!</p>
+    <div class="moods" *ngIf="form.get('mood')">
+        <button *ngFor="let mood of moods" [ngClass]="{'selected': mood.value === selectedMood}" (click)="selectedMood = mood.value">
+            {{mood.emoji}}{{mood.name}}
+        </button>
+    </div>
+    <textarea 
+        class="chat-input" 
+        type="text" 
+        placeholder="Type Note..." 
+        formControlName="note"
+        (keydown.enter)="onClickEnter($event)"
+    ></textarea>
+    <button class="add-diary" (click)="onClickSendMessage()">
+        Add Diary to {{form.get('date')?.value | date:'mediumDate'}}
+    </button>
+</form>

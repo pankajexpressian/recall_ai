@@ -19,7 +19,6 @@ enum MessageType {
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('messageContainer') private messageContainer: ElementRef | undefined;
-  @Input() public display: string | undefined;
 
   public form = this.formBuilder.group({
     message: ['']
