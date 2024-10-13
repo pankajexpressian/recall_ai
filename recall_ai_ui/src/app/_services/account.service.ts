@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, finalize, catchError } from 'rxjs/operators';
 
@@ -9,11 +9,14 @@ import { Account } from '@app/_models';
 
 const baseUrl = `${environment.apiUrl}/users`;
 
+const searchNoteUrl = `${environment.apiUrl}/users`;
+
 type User = {
     email: string;
     firstName: string;
     lastName: string;
     userId: number;
+    id: number;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -104,7 +107,7 @@ export class AccountService {
         return this.http.post(baseUrl, params);
     }
 
-    update(id: string, params: any) {
+    update(id: number, params: any) {
         return this.http.put(`${baseUrl}/${id}`, params)
             .pipe(map((account: any) => {
                 // update the current account if it was updated
@@ -117,11 +120,11 @@ export class AccountService {
             }));
     }
 
-    delete(id: string) {
+    delete(id: number) {
         return this.http.delete(`${baseUrl}/${id}`)
             .pipe(finalize(() => {
                 // auto logout if the logged in account was deleted
-                if (id === this.accountValue?.id)
+                if (id == this.accountValue?.id)
                     this.logout();
             }));
     }
@@ -143,5 +146,13 @@ export class AccountService {
 
     private stopRefreshTokenTimer() {
         clearTimeout(this.refreshTokenTimeout);
+    }
+
+    searchNotes(query: string, userId: number): Observable<any> {
+        const params = new HttpParams()
+          .set('query', query)
+         
+        return this.http.get(`${baseUrl}/${userId}/diaries/search-notes`, { params });
+        //return this.http.get<any>(`${baseUrl}/search-notes`, { params });
     }
 }

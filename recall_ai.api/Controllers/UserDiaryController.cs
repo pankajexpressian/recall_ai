@@ -117,16 +117,16 @@ namespace recall_ai.api.Controllers
             (Mood? mood, DateTime? date) = ExtractMoodAndDate(query);
 
             // Assuming mood is of type Mood? (nullable Mood)
-            var results = await _dbContext.UserDiaries
-                .Where(d => d.UserId == userid &&
-                            (!date.HasValue || d.NoteDate.Date == date.Value.Date) &&
-                            d.Mood == mood) // Compare directly with enum
-                .ToListAsync();
+            //var results = await _dbContext.UserDiaries
+            //    .Where(d => d.UserId == userid &&
+            //                (!date.HasValue || d.NoteDate.Date == date.Value.Date) &&
+            //                d.Mood == mood) // Compare directly with enum
+            //    .ToListAsync();
 
-            if (!results.Any())
-            {
-                return NotFound("No notes found matching your query.");
-            }
+            //if (!results.Any())
+            //{
+            //    return NotFound("No notes found matching your query.");
+            //}
 
             // Generate embedding for the query
             var sentences = new[] { query };
@@ -154,7 +154,9 @@ namespace recall_ai.api.Controllers
             // Check if rephraseContext has entries before proceeding
             if (!rephraseContext.Any())
             {
-                return BadRequest("No valid notes available for rephrasing.");
+                    // If no notes are found, create a friendly conversation starter
+                    rephraseContext.Add("It seems you haven't written any notes yet. How have you been feeling lately?");
+                    rephraseContext.Add("Feel free to share something, and we can talk about it.");
             }
 
             // Call the Gen-AI model to rephrase the notes in a human-friendly way

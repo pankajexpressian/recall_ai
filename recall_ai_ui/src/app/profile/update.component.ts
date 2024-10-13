@@ -50,7 +50,7 @@ export class UpdateComponent implements OnInit {
         }
 
         this.submitting = true;
-        this.accountService.update(this.account.id!, this.form.value)
+        this.accountService.update(this.account.id, this.form.value)
             .pipe(first())
             .subscribe({
                 next: () => {

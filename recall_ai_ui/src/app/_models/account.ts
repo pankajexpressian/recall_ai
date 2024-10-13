@@ -1,7 +1,8 @@
 ﻿import { Role } from './role';
 
 export class Account {
-    id?: string;
+    id: number = 0;
+    userId = 0;
     title?: string;
     firstName?: string;
     lastName?: string;

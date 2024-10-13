@@ -9,7 +9,7 @@ import { MustMatch } from '@app/_helpers';
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
     form!: FormGroup;
-    id?: string;
+    id: number = 0;
     title!: string;
     loading = false;
     submitting = false;
@@ -44,7 +44,7 @@ export class AddEditComponent implements OnInit {
             // edit mode
             this.title = 'Edit Account';
             this.loading = true;
-            this.accountService.getById(this.id)
+            this.accountService.getById(this.id.toString())
                 .pipe(first())
                 .subscribe(x => {
                     this.form.patchValue(x);
@@ -73,7 +73,7 @@ export class AddEditComponent implements OnInit {
         let saveAccount;
         let message: string;
         if (this.id) {
-            saveAccount = () => this.accountService.update(this.id!, this.form.value);
+            saveAccount = () => this.accountService.update(this.id, this.form.value);
             message = 'Account updated';
         } else {
             saveAccount = () => this.accountService.create(this.form.value);

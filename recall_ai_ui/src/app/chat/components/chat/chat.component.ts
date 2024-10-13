@@ -1,5 +1,6 @@
 import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { AccountService } from '@app/_services';
 
 type Message = {
   text?: string;
@@ -20,7 +21,10 @@ enum MessageType {
 export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('messageContainer') private messageContainer: ElementRef | undefined;
   @Input() public display: string | undefined;
-
+  query: string = '';
+  originalNotes: string[] = [];
+  rephrasedNotes: string = '';
+  errorMessage: string = '';
   public form = this.formBuilder.group({
     message: ['']
   });
@@ -28,7 +32,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   public messages: Array<Message> = [];
   private canSendMessage = true;
 
-  constructor(private formBuilder: FormBuilder){}
+  constructor(private formBuilder: FormBuilder,  private accountService: AccountService,){}
 
   ngOnInit(): void {
     this.getBotMessage();
@@ -47,7 +51,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
       this.form.get('message')?.setValue('');
       this.form.updateValueAndValidity();
-      this.getBotMessage();
+      this.searchNotes(message);
     }
   }
 
@@ -62,6 +66,36 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.messages.push(botMessage);
       this.canSendMessage = true;
    }, 2000);
+  }
+
+  searchNotes(message: string) {
+    if (!message.trim()) {
+      this.errorMessage = 'Please enter a query';
+      return;
+    }
+    var userid = this.accountService.accountValue?.userId;
+    
+    console.log(userid);
+    this.accountService.searchNotes(message, userid ?? 0).subscribe(
+      response => {
+        this.originalNotes = response.originalNotes;
+        
+
+        // Parse the rephrasedNotes JSON
+        if (response.rephrasedNotes) {
+          const parsedRephrased = JSON.parse(response.rephrasedNotes);
+          this.rephrasedNotes =  parsedRephrased.result;
+        }
+        this.errorMessage = ''; // Clear any previous error message
+        this.messages.pop();
+        const botMessage: Message = {text: this.rephrasedNotes, type: MessageType.Bot};
+        this.messages.push(botMessage);
+        this.canSendMessage = true;
+      },
+      error => {
+        this.errorMessage = 'No notes found matching your query or an error occurred.';
+      }
+    );
   }
 
   public onClickEnter(event: Event): void {
