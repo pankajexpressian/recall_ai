@@ -40,8 +40,13 @@ def authenticate_huggingface(token):
 
 # Function to search notes based on query and context
 def search_notes_huggingface(query, diary_entries, hf_token):
-    # Simulate top_indices (you should replace this with your actual index fetching logic)
-    top_indices = [0, 1]  # Example indices (fetching the first two diary entries)
+     # Get the number of diary entries
+    num_entries = len(diary_entries)
+
+    # Generate dynamic top_indices based on the number of entries
+    # Here, I'm selecting the top N entries, or all if there are fewer than N entries
+    N = min(5, num_entries)  # Set 3 as the maximum number of top entries, adjust if necessary
+    top_indices = list(range(N))  # Dynamic indices based on the number of entries
 
     # Fetch corresponding diary entries
     doc = []
@@ -58,7 +63,7 @@ def search_notes_huggingface(query, diary_entries, hf_token):
     # Create a LangChain prompt
     prompt = ChatPromptTemplate.from_template(
         "You are an assistant who answers user based on the notes documented by user in the context: {context}. "
-        "Based on this user query: {query} and using the context, provide an answer as a friend."
+        "Based on this user query: {query} and using the context, provide an answer as a friend.Don't include I with user query always response like you and I always use in case of your sentences."
     )
 
     # Create LangChain document processing chain

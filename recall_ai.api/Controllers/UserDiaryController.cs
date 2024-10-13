@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using recall_ai.api.Core;
 using recall_ai.api.Data;
@@ -15,20 +16,18 @@ namespace recall_ai.api.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly TextEmbeddingService _embeddingService;
         private readonly PineconeClient _pineconeClient;
-        private readonly OpenAiService _genAIService;
-        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient, OpenAiService genAIService)
+        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient)
         {
             _dbContext = dbContext;
             _embeddingService = embeddingService;
             _pineconeClient = pineconeClient;
-            _genAIService = genAIService;
         }
 
         // Get all diaries for a specific user
         [HttpGet]
         public async Task<IActionResult> GetUserDiaries(int userid)
         {
-            var diaries = await _dbContext.UserDiaries.Where(a => a.UserId == userid).ToListAsync();
+            var diaries = await _dbContext.UserDiaries.Where(a => a.UserId == userid).OrderByDescending(n => n.NoteDate).ToListAsync();
             return Ok(diaries);
         }
 
@@ -53,7 +52,7 @@ namespace recall_ai.api.Controllers
             await _dbContext.SaveChangesAsync();
 
             var sentences = new[] { diary.Note };
-
+            string moodName = System.Enum.GetName(typeof(Mood), diary.Mood);
             // Generate embedding for the note
             List<List<float>> embeddings = await _embeddingService.GetTextEmbedding(sentences);
 
@@ -65,7 +64,8 @@ namespace recall_ai.api.Controllers
         {
             { "userId", diary.UserId },
             { "noteDate", diary.NoteDate.ToString("yyyy-MM-dd") },  // Store as string if comparing later as string
-            { "mood", diary.Mood.ToString() }
+            { "mood", moodName
+            }
         };
                 // Index the embedding in Pinecone; assuming you want to index the first embedding
                 await _pineconeClient.IndexVector(diary.DiaryId.ToString(), embeddings[0], metadata);
@@ -139,16 +139,15 @@ namespace recall_ai.api.Controllers
             var notes = await _dbContext.UserDiaries
                 .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId == userid)
                 .Select(n => new { n.Note, n.NoteDate, n.Mood })
+                .OrderByDescending(n => n.NoteDate)
                 .ToListAsync();
             var rephraseContext = new List<string>();
             foreach (var note in notes)
             {
-                // Generate mood description
-                string moodDescription = note.Mood != Mood.None ? note.Mood.ToString() : "no specific mood";
-
+                string moodDescription = System.Enum.GetName(typeof(Mood), note.Mood);
                 // Add two entries for each note to rephrase context
-                rephraseContext.Add($"On {note.NoteDate.ToShortDateString()}, you felt {moodDescription}.");
-                rephraseContext.Add($"You wrote: '{note.Note}'");
+                // rephraseContext.Add($"On {note.NoteDate.ToShortDateString()}, you felt {moodDescription}.");
+                rephraseContext.Add($"On {note.NoteDate.ToShortDateString()}, You wrote: '{note.Note} and you felt {moodDescription} and please add emoji's based on mood which is available in notes'");
             }
 
             // Check if rephraseContext has entries before proceeding
@@ -169,7 +168,7 @@ namespace recall_ai.api.Controllers
         {
             // Extract mood using a predefined set of moods
             Mood? mood = null;
-            foreach (Mood m in Enum.GetValues(typeof(Mood)))
+            foreach (Mood m in System.Enum.GetValues(typeof(Mood)))
             {
                 if (query.Contains(m.ToString(), StringComparison.OrdinalIgnoreCase))
                 {
