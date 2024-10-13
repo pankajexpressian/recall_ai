@@ -26,6 +26,10 @@ $white: #ECF3F4;
     display: none;
 }
 
+textarea.mat-mdc-input-element {
+    padding: 10px 0;
+}  
+
 .fixed-chat {
     display: flex;
     flex-direction: column;
@@ -167,7 +171,6 @@ $white: #ECF3F4;
 
     .chat-form {
         width: 90%;
-        height: 60%;
         background-color: $white;
         margin-bottom: 5%;
         border-radius: 10px;
