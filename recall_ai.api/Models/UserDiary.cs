@@ -26,6 +26,14 @@ namespace recall_ai.api.Models
 
     public enum Mood
     {
-        None=0,Happy = 1, Sad = 2, Neutral = 3
+
+        NEUTRAL = 0,
+        ANGER = 1,
+        DISGUST = 2,
+        FEAR = 3,
+        JOY = 4,
+        SADNESS = 5,
+        SURPRISE = 6
     }
 }
+
