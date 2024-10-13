@@ -39,7 +39,7 @@ export class WriteDiaryComponent {
     if (this.form.valid) {
       const formData = this.form.value;
       const payload = {
-        userId: this.accountService.accountValue?.id ? +this.accountService.accountValue.id : 1,
+        userId: this.accountService.accountValue?.userId ?? 0,
         note: formData.note || '',
         noteDate: formData.date ? new Date(formData.date) : new Date(),
         mood: formData.mood ?? undefined,

@@ -73,14 +73,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.errorMessage = 'Please enter a query';
       return;
     }
+    this.canSendMessage = false;
+    const waitMessage: Message = {type: MessageType.Loading};
+    this.messages.push(waitMessage);
     var userid = this.accountService.accountValue?.userId;
     
     console.log(userid);
     this.accountService.searchNotes(message, userid ?? 0).subscribe(
       response => {
         this.originalNotes = response.originalNotes;
-        
-
+      
         // Parse the rephrasedNotes JSON
         if (response.rephrasedNotes) {
           const parsedRephrased = JSON.parse(response.rephrasedNotes);
