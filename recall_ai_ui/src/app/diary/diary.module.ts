@@ -5,12 +5,14 @@ import { CommonModule } from '@angular/common';
 import { DiaryRoutingModule } from './diary-routing.module';
 import { WriteDiaryComponent } from './components/write-diary/write-diary.component';
 import { ViewDiaryComponent } from './components/view-diary/view-diary.component';
+import { MaterialModule } from '@app/material.module';
 
 @NgModule({
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        DiaryRoutingModule
+        DiaryRoutingModule,
+        MaterialModule
     ],
     declarations: [
         WriteDiaryComponent,
