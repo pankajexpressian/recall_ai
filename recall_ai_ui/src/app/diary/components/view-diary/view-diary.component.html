@@ -1,15 +1,15 @@
-<div class="container bootstrap snippets bootdeys">
-    <div class="row">
-        <div *ngFor="let diary of diaries" class="col-md-4 col-sm-6 content-card">
+<div class="container bootstrap snippets bootdeys py-2">
+    <h3 class="mood-title text-center pb-2">My Diaries</h3>
+    <div class="diaries">
+        <div *ngFor="let diary of diaries" class="content-card">
             <div class="card-big-shadow">
                 <div class="card card-just-text" data-background="color" [attr.data-color]="moods[diary.mood].color"  data-radius="none">
                     <div class="content">
-                        <h6 class="category">{{diary.noteDate | date : 'longDate'}}</h6>
-                        <h4 class="title"><a href="#">Feeling {{moods[diary.mood].name}}</a></h4>
-                        <p class="description">{{diary.note | truncate}}</p>
+                        <h6 class="category">{{diary.noteDate | date : 'longDate'}} {{diary.mood ? ' - ' + moods[diary.mood].emoji: ''}}</h6>
+                        <p class="description mb-0">{{diary.note | truncate}}</p>
                     </div>
                 </div> <!-- end card -->
             </div>
         </div>
     </div>
-    </div>
+</div>

@@ -1,4 +1,5 @@
 <form [formGroup]="form" class="container py-3">
+    <h3 class="mood-title text-center">Write your diary</h3>
     <input type="date" [max]="today" formControlName="date" [value]="form.get('date')?.value">
     <p class="mood-title">How are you feeling on this date? If you'd like to share, we'd love to hear!</p>
     <div class="moods" *ngIf="form.get('mood')">

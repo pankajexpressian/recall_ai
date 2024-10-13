@@ -28,4 +28,8 @@ export class DiaryService {
     }) {
         return this.http.post<User[]>(`${baseUrl}/${data.userId}/diaries`, data);
     }
+
+    getDiaries(userId: number) {
+        return this.http.get<any>(`${baseUrl}/${userId}/diaries`);
+    }
 }
