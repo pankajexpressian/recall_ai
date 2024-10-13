@@ -1,6 +1,15 @@
-﻿<div class="p-4">
+﻿<div class="home-container p-4">
     <div class="container">
-        <h1>Hi {{account?.firstName}}!</h1>
-        <p>You're logged in with Angular 15 & JWT!!</p>
+        <p>How's your mood Today!</p>
+        <div class="moods">
+            <button class="mood" *ngFor="let mood of moods">
+                {{mood.name}}
+            </button>
+        </div>
+    </div>
+    <div class="mt-auto buttons">
+        <button (click)="onClick('/diary')">WRITE A DIARY</button>
+        <button (click)="onClick('/diary/view-diary')">VIEW ALL DIARIES</button>
+        <button (click)="onClick('/chat')">CHAT WITH YOURSELF</button>
     </div>
 </div>

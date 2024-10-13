@@ -2,6 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // used to create fake backend
 // import { fakeBackendProvider } from './_helpers';
@@ -12,13 +13,15 @@ import { JwtInterceptor, ErrorInterceptor, /** appInitializer */ } from './_help
 import { AppComponent } from './app.component';
 import { AlertComponent } from './_components';
 import { HomeComponent } from './home';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 @NgModule({
     imports: [
         BrowserModule,
         ReactiveFormsModule,
         HttpClientModule,
-        AppRoutingModule
+        AppRoutingModule,
+        BrowserAnimationsModule
     ],
     declarations: [
         AppComponent,
@@ -29,6 +32,12 @@ import { HomeComponent } from './home';
         // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AccountService] },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        {
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: {
+              subscriptSizing: 'dynamic'
+            }
+          }
 
         // provider used to create fake backend
         // fakeBackendProvider
