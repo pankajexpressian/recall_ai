@@ -5,19 +5,30 @@ $blue: #729CA2;
 $light_blue: #C4DCDF;
 $white: #ECF3F4;
 
+:host {
+    max-width: 500px;
+    margin: auto;
+    width: 100%;
+}
+
+form {
+    border: 2px solid #465461;
+    border-radius: 10px;
+}
+
 :host, form {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 .mdc-card {
     flex: 1;
-    overflow: auto;
+    overflow-y: auto;
 
     &__actions {
-        padding: 0;
+        padding: 0 16px;
         min-height: inherit;
     }
 }
@@ -28,7 +39,7 @@ $white: #ECF3F4;
 
 textarea.mat-mdc-input-element {
     padding: 10px 0;
-}  
+}
 
 .fixed-chat {
     display: flex;
@@ -61,6 +72,7 @@ textarea.mat-mdc-input-element {
     .chat-icon {
         -webkit-filter: invert(100%);
         filter: invert(100%);
+        margin-bottom: 0;
     }
 
     .chat-title {
@@ -68,7 +80,7 @@ textarea.mat-mdc-input-element {
         font-weight: 500;
         margin-bottom: 0px !important;
     }
-    
+
     .chat-subtitle {
         color: $white;
         margin-bottom: 0px;
@@ -88,13 +100,13 @@ textarea.mat-mdc-input-element {
 
 .chat-content {
     flex-grow: 1;
-    overflow: auto;
-    margin: 5%; 
+    overflow-y: auto;
+    margin: 15px 0px;
 
     .messages {
         display: flex;
         flex-direction: column;
-        overflow: scroll;
+        overflow-y: auto;
         width: 100%;
     }
 }
@@ -110,7 +122,7 @@ textarea.mat-mdc-input-element {
     font-size: 14px;
     font-weight: 400;
     margin-bottom: 12px;
-    word-break: break-word;    
+    word-break: break-word;
     word-wrap: break-word;
     hyphens: auto;
 
@@ -154,7 +166,7 @@ textarea.mat-mdc-input-element {
                 width: 18px;
             }
         }
-          
+
         @-webkit-keyframes loading-message {
             to {
                 width: 18px;
@@ -170,9 +182,9 @@ textarea.mat-mdc-input-element {
     // margin-bottom: 100px;
 
     .chat-form {
-        width: 90%;
+        width: 100%;
         background-color: $white;
-        margin-bottom: 5%;
+        margin-bottom: 10px;
         border-radius: 10px;
     }
 
@@ -180,13 +192,13 @@ textarea.mat-mdc-input-element {
         resize: none;
         height: 18px;
         font-size: 14px;
-        overflow: scroll;
+        overflow: auto;
         color: $black;
     }
 
     .send-button {
         color: $blue;
-    
+
         .send-icon {
             font-size: 20px;
         }

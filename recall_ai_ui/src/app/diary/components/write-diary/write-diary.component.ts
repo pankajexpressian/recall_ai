@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AccountService, AlertService } from '@app/_services';
@@ -8,15 +7,15 @@ import { DiaryService } from '@app/diary/diary.service';
 @Component({
   selector: 'app-write-diary',
   templateUrl: './write-diary.component.html',
-  styleUrls: ['./write-diary.component.less'],
-  providers: [DatePipe]
+  styleUrls: ['./write-diary.component.less']
 })
 export class WriteDiaryComponent {
   moods = MOODS;
+  today = new Date().toISOString().split('T')[0];
 
   public form = new FormGroup({
     note: new FormControl('', [Validators.required]),
-    date: new FormControl(this.datePipe.transform(new Date(), 'yyyy-MM-dd')),
+    date: new FormControl(this.today),
     mood: new FormControl(),
   });
 
@@ -31,8 +30,7 @@ export class WriteDiaryComponent {
   constructor(
     private diaryService: DiaryService,
     private alertService: AlertService,
-    private accountService: AccountService,
-    private datePipe: DatePipe
+    private accountService: AccountService
   ){}
 
   onClickSendMessage(){

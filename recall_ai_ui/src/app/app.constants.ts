@@ -1,44 +1,44 @@
 export const MOODS = [
     {
       name: 'ANGER',
-      value: 0,
-      color: '#ffaaae',
+      value: 1,
+      color: 'orange',
       emoji: '😡'  // Angry face emoji
     },
     {
       name: 'DISGUST',
-      value: 1,
-      color: '#8ef1b3',
+      value: 2,
+      color: 'green',
       emoji: '🤢'  // Nauseated face emoji
     },
     {
       name: 'FEAR',
-      value: 2,
-      color: '#fee351',
+      value: 3,
+      color: 'yellow',
       emoji: '😨'  // Fearful face emoji
     },
     {
       name: 'JOY',
-      value: 3,
-      color: '#9cc9ff',
+      value: 4,
+      color: 'blue',
       emoji: '😊'  // Smiling face with smiling eyes emoji
     },
     {
       name: 'NEUTRAL',
-      value: 4,
-      color: '#d5d9df',
+      value: 0,
+      color: 'grey',
       emoji: '😐'  // Neutral face emoji
     },
     {
       name: 'SADNESS',
       value: 5,
-      color: '#acb8fe',
+      color: 'purple',
       emoji: '😢'  // Crying face emoji
     },
     {
       name: 'SURPRISE',
       value: 6,
-      color: '#fbaed9',
+      color: 'brown',
       emoji: '😲'  // Astonished face emoji
     }
   ];
