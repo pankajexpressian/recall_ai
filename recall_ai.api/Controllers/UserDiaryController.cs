@@ -16,20 +16,18 @@ namespace recall_ai.api.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly TextEmbeddingService _embeddingService;
         private readonly PineconeClient _pineconeClient;
-        private readonly OpenAiService _genAIService;
-        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient, OpenAiService genAIService)
+        public UserDiaryController(ApplicationDbContext dbContext, TextEmbeddingService embeddingService, PineconeClient pineconeClient)
         {
             _dbContext = dbContext;
             _embeddingService = embeddingService;
             _pineconeClient = pineconeClient;
-            _genAIService = genAIService;
         }
 
         // Get all diaries for a specific user
         [HttpGet]
         public async Task<IActionResult> GetUserDiaries(int userid)
         {
-            var diaries = await _dbContext.UserDiaries.Where(a => a.UserId == userid).ToListAsync();
+            var diaries = await _dbContext.UserDiaries.Where(a => a.UserId == userid).OrderByDescending(n => n.NoteDate).ToListAsync();
             return Ok(diaries);
         }
 
@@ -141,6 +139,7 @@ namespace recall_ai.api.Controllers
             var notes = await _dbContext.UserDiaries
                 .Where(note => searchResults.Contains(note.DiaryId.ToString()) && note.UserId == userid)
                 .Select(n => new { n.Note, n.NoteDate, n.Mood })
+                .OrderByDescending(n => n.NoteDate)
                 .ToListAsync();
             var rephraseContext = new List<string>();
             foreach (var note in notes)
