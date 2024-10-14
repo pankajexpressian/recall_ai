@@ -1,4 +1,10 @@
 export const MOODS = [
+  {
+    name: 'NEUTRAL',
+    value: 0,
+    color: 'grey',
+    emoji: '😐'  // Neutral face emoji
+  },
     {
       name: 'ANGER',
       value: 1,
@@ -22,12 +28,6 @@ export const MOODS = [
       value: 4,
       color: 'blue',
       emoji: '😊'  // Smiling face with smiling eyes emoji
-    },
-    {
-      name: 'NEUTRAL',
-      value: 0,
-      color: 'grey',
-      emoji: '😐'  // Neutral face emoji
     },
     {
       name: 'SADNESS',

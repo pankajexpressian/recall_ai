@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div  class="col-md-4 col-sm-6 heading">
+            <h1>My Diary</h1>
+        </div>
+    </div>
+    <div class="row mg-head">
+        <div  class="col-md-4 col-sm-6 head card" [attr.data-color]="moods[diary.mood].color">
+            {{moods[diary.mood].emoji}} {{diary.noteDate | date: 'longDate'}}
+        </div>
+    </div>
+    <div class="row mg-body">
+        <div  class="col-md-4 col-sm-6 diary-text description" [attr.data-color]="moods[diary.mood].color">
+            {{diary.note}}
+        </div>
+    </div>
+    </div>
