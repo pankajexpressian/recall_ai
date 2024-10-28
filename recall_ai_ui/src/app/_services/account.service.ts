@@ -9,8 +9,6 @@ import { Account } from '@app/_models';
 
 const baseUrl = `${environment.apiUrl}/users`;
 
-const searchNoteUrl = `${environment.apiUrl}/users`;
-
 type User = {
     email: string;
     firstName: string;

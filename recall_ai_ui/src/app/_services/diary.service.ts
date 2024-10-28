@@ -14,6 +14,7 @@ type User = {
 
 @Injectable({ providedIn: 'root' })
 export class DiaryService {
+    todaysMood?: number;
 
     constructor(
         private http: HttpClient
@@ -31,5 +32,9 @@ export class DiaryService {
 
     getDiaries(userId: number) {
         return this.http.get<any>(`${baseUrl}/${userId}/diaries`);
+    }
+
+    getDiary(userId: number, diaryId: number) {
+        return this.http.get<any>(`${baseUrl}/${userId}/diaries/${diaryId}`);
     }
 }

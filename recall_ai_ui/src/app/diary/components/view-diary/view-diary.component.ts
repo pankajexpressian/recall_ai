@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Diary } from '@app/_models/diary';
-import { AccountService } from '@app/_services';
+import { AccountService, DiaryService } from '@app/_services';
 import { MOODS } from '@app/app.constants';
-import { DiaryService } from '@app/diary/diary.service';
 
 @Component({
   selector: 'app-view-diary',

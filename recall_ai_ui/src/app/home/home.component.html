@@ -2,7 +2,7 @@
     <div class="container">
         <p>How's your mood Today!</p>
         <div class="moods">
-            <button class="mood" *ngFor="let mood of moods">
+            <button class="mood" *ngFor="let mood of moods" (click)="submitTodayMood(mood)" [ngClass]="{'active': mood.value === todaysMood}">
                 {{mood.emoji}}{{mood.name}}
             </button>
         </div>
