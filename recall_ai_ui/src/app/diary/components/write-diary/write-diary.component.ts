@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AccountService, AlertService } from '@app/_services';
+import { AccountService, AlertService, DiaryService } from '@app/_services';
 import { MOODS } from '@app/app.constants';
-import { DiaryService } from '@app/diary/diary.service';
 
 @Component({
   selector: 'app-write-diary',

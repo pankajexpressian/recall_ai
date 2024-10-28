@@ -7,6 +7,7 @@ import { WriteDiaryComponent } from './components/write-diary/write-diary.compon
 import { ViewDiaryComponent } from './components/view-diary/view-diary.component';
 import { MaterialModule } from '@app/material.module';
 import { TruncatePipe } from '@app/_pipes/truncate-text.pipe';
+import { ViewDetailedDiaryComponent } from './components/view-detailed-diary/view-detailed-diary.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { TruncatePipe } from '@app/_pipes/truncate-text.pipe';
     declarations: [
         WriteDiaryComponent,
         ViewDiaryComponent,
+        ViewDetailedDiaryComponent,
         TruncatePipe
     ]
 })

@@ -2,7 +2,7 @@
     <h3 class="mood-title text-center pb-2">My Diaries</h3>
     <div class="diaries">
         <div *ngFor="let diary of diaries" class="content-card">
-            <div class="card-big-shadow">
+            <div class="card-big-shadow" (click)="openDiaryDetails(diary)">
                 <div class="card card-just-text" data-background="color" [attr.data-color]="moods[diary.mood].color"  data-radius="none">
                     <div class="content">
                         <h6 class="category">{{diary.noteDate | date : 'longDate'}} {{diary.mood ? ' - ' + moods[diary.mood].emoji: ''}}</h6>
