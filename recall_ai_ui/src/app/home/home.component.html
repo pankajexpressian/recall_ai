@@ -7,6 +7,11 @@
             </button>
         </div>
     </div>
+    <!-- login.component.html -->
+    <button *ngIf="!isTokenAvailable" (click)="loginWithSpotify()">Login with Spotify</button>
+<div class="audio-container">
+    <app-audio-player [recommendations]="recommendations"></app-audio-player>
+</div>
     <div class="mt-auto buttons">
         <button (click)="onClick('/diary')">WRITE A DIARY</button>
         <button (click)="onClick('/diary/view-diary')">VIEW ALL DIARIES</button>

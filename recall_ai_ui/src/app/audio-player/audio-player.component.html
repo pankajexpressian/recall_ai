@@ -1,0 +1,48 @@
+<div class="audio-player-container" *ngIf="recommendations.length">
+  <!-- Current Track Display -->
+  <div class="track-info">
+    <img *ngIf="currentTrack.albumArt" [src]="currentTrack.albumArt" alt="Album Art" class="album-art" />
+    <div class="track-details">
+      <h3 class="track-title">{{ currentTrack.name || 'Track Title' }}</h3>
+      <p class="track-artist">{{ currentTrack.artist || 'Artist Name' }}</p>
+    </div>
+  </div>
+
+  <!-- Playback Controls -->
+  <div class="playback-controls">
+    <button (click)="previousTrack()" class="control-btn">
+      <i class="fas fa-step-backward"></i>
+    </button>
+    <button (click)="togglePlayPause()" class="control-btn">
+      <i [class]="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+    </button>
+    <button (click)="nextTrack()" class="control-btn">
+      <i class="fas fa-step-forward"></i>
+    </button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-container">
+    <span class="current-time">{{ currentTime | date: 'mm:ss' }}</span>
+    <input
+      type="range"
+      class="progress-bar"
+      [(ngModel)]="progress"
+      (change)="seekTrack($event)"
+      [max]="trackDuration"
+    />
+    <span class="duration">{{ trackDuration | date: 'mm:ss' }}</span>
+  </div>
+
+  <!-- Track List -->
+  <div class="track-list">
+    <p>Recommended Music</p>
+    <div 
+      *ngFor="let track of recommendations; let i = index" 
+      class="track-item" 
+      (click)="playTrack(i)" 
+      [ngClass]="{'active-track': currentTrackIndex === i}">
+      <p>{{ track.name }} - {{ track.artistName }}</p>
+    </div>
+  </div>  
+</div>

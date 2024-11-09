@@ -1,6 +1,6 @@
 ﻿import { NgModule, /** APP_INITIALIZER */ } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { AlertComponent } from './_components';
 import { HomeComponent } from './home';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { AudioPlayerComponent } from './audio-player/audio-player.component';
 
 @NgModule({
     imports: [
@@ -21,12 +22,14 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
         ReactiveFormsModule,
         HttpClientModule,
         AppRoutingModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        FormsModule
     ],
     declarations: [
         AppComponent,
         AlertComponent,
-        HomeComponent
+        HomeComponent,
+        AudioPlayerComponent
     ],
     providers: [
         // { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AccountService] },
