@@ -334,6 +334,7 @@ __pycache__/
 
 # OpenCover UI analysis results
 OpenCover/
+recall_ai.api/Core/venv/
 
 # Azure Stream Analytics local run output
 ASALocalRun/
