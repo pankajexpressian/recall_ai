@@ -1,0 +1,6 @@
+﻿flask
+torch
+transformers
+langchain-core
+langchain-huggingface
+huggingface_hub

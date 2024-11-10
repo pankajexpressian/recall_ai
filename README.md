@@ -67,13 +67,96 @@ To start the frontend application, use the following command:
 ```bash
 ng serve --port=4200
 ```
+### Step 3: Run the python application
+Flask Application with Hugging Face Integration
+This application provides two endpoints:
 
-### Step 4: Access the Application
+/get_embedding: Returns embeddings for input sentences.
+/search-notes: Searches diary entries based on user queries, utilizing Hugging Face's language model.
+
+Prerequisites
+Python 3.7+
+A Hugging Face API token
+
+File location
+Code files are available under "recall_ai.api\Core"
+Setup
+1. Open above folder location in VS code run the following steps.
+a. Create a Virtual Environment
+Create a virtual environment to manage dependencies and run below commands in terminal:
+
+python3 -m venv venv
+
+Activate the virtual environment:
+
+On Windows:
+venv\Scripts\activate
+
+On macOS/Linux:
+source venv/bin/activate
+
+3. Install Dependencies
+Create a requirements.txt file if it doesn't already exist, and add the following dependencies:
+
+text
+Copy code
+flask
+torch
+transformers
+langchain-core
+langchain-huggingface
+huggingface_hub
+Then, install the dependencies:
+
+pip install -r requirements.txt
+
+4. Set Up Hugging Face Authentication
+You’ll need a Hugging Face API token to access models. Save your token for use in the /search-notes endpoint.
+
+5. Run the Application
+With the virtual environment activated, start the Flask application:
+
+python embeddings.py
+The server will run on http://0.0.0.0:5000.
+
+### Step 5: Access the Application
 
 Open your browser and go to `http://localhost:4200` to interact with the fully functional application.
 
 ---
 
+Usage
+1. Test the /get_embedding Endpoint
+Send a POST request with a JSON payload containing sentences to receive embeddings.
+
+Example Request:
+
+bash
+Copy code
+curl -X POST http://localhost:5000/get_embedding -H "Content-Type: application/json" -d "{\"sentences\": [\"This is a test sentence.\"]}"
+Expected Response:
+
+json
+Copy code
+{
+  "embeddings": [[...]]
+}
+2. Test the /search-notes Endpoint
+Send a POST request to search diary entries based on a query, with authentication to Hugging Face.
+
+Example Request:
+
+bash
+Copy code
+curl -X POST http://localhost:5000/search-notes -H "Content-Type: application/json" -d "{\"query\": \"search text\", \"diary_entries\": [\"entry 1\", \"entry 2\"], \"huggingface_token\": \"your_token_here\"}"
+Expected Response:
+
+json
+Copy code
+{
+  "result": "Generated response based on notes and query"
+}
+Note: Replace "your_token_here" with a valid Hugging Face token.
 Feel free to contribute or report any issues!
 ```
 
