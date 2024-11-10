@@ -6,8 +6,15 @@ namespace recall_ai.api.Services
 {
     public class SpotifyService
     {
-        private readonly string _clientId = "d6a9e0a88e0a4237a4d16f59b297f4a7";
-        private readonly string _clientSecret = "960d94591f614a9781c34a4bdaeae1b5";
+        private readonly string _clientId;
+        private readonly string _clientSecret;
+
+        public SpotifyService(IConfiguration configuration)
+        {
+            // Retrieve the API key from appsettings.json
+            _clientId = configuration["SpotifyService:ClientId"];
+            _clientSecret = configuration["SpotifyService:ClientSecret"];
+        }
         private readonly string _redirectUri = "http://localhost:5076/api/spotify/callback";
 
         public async Task<string> GetAccessTokenAsync(string code)
@@ -50,7 +57,7 @@ namespace recall_ai.api.Services
                 var parameters = moodParams.ContainsKey(mood) ? moodParams[mood] : "target_valence=0.5";
                 //var url = $"https://api.spotify.com/v1/recommendations?seed_genres=chill&{parameters}&limit=100";
                 // Define mood parameter for recommendations (example mood parameter)
-                
+
                 // Define artist seeds with popular Bollywood artist IDs
                 var seedArtists = "4zCH9qm4R2DADamUHMCa6O,3hwKzo1ysGHiSxkqRY1p6S,1wRPtKGflJrBx9BmLsSwlU"; // Example Bollywood artist IDs
 
