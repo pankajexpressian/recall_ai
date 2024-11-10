@@ -117,6 +117,7 @@ Code files are available under `recall_ai.api/Core`.
    flask
    torch
    transformers
+   langchain
    langchain-core
    langchain-huggingface
    huggingface_hub
@@ -130,8 +131,9 @@ Code files are available under `recall_ai.api/Core`.
 
 4. **Set Up Hugging Face Authentication**
 
-   You’ll need a Hugging Face API token to access models. Save your token for use in the `/search-notes` endpoint.
-
+   You’ll need a Hugging Face API token to access models.
+   Go to appsettings.json under recall_ai.api project and replace token in the ApiKey of HuggingFace.
+   
 5. **Run the Application**
 
    With the virtual environment activated, start the Flask application:
@@ -140,7 +142,7 @@ Code files are available under `recall_ai.api/Core`.
    python embeddings.py
    ```
 
-   The server will run on `http://0.0.0.0:5000`.
+   The server will run on `http://127.0.0.1:5000`.
 
 ### Step 5: Access the Application
 
@@ -185,6 +187,12 @@ curl -X POST http://localhost:5000/search-notes -H "Content-Type: application/js
   "result": "Generated response based on notes and query"
 }
 ```
+
+### 3. Music recommendation feature
+
+To use the music recommendation feature in the app, please register on the Spotify Developer Console, as this application operates within the development sandbox environment.
+Already registed emails
+- agrawal.lovelesh01@gmail.com
 
 *Note*: Replace `"your_token_here"` with a valid Hugging Face token.
 
