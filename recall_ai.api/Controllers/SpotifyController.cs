@@ -12,9 +12,12 @@ namespace recall_ai.api.Controllers
     {
         private readonly SpotifyService _spotifyService;
 
-        public SpotifyController(SpotifyService spotifyService)
+        private readonly IConfiguration _configuration;
+
+        public SpotifyController(SpotifyService spotifyService, IConfiguration configuration)
         {
             _spotifyService = spotifyService;
+            _configuration = configuration;
         }
 
         [HttpPost("recommendations")]
@@ -68,9 +71,9 @@ namespace recall_ai.api.Controllers
         [HttpGet("login")]
         public IActionResult SpotifyLogin()
         {
-            string clientId = "d6a9e0a88e0a4237a4d16f59b297f4a7";
-            string redirectUri = "http://localhost:5076/api/spotify/callback"; // Backend callback URL
-            string scope = "user-read-private user-read-email"; // Required scopes
+            string clientId = _configuration["SpotifyService:ClientId"];
+            string redirectUri = _configuration["SpotifyService:RedirectUri"];
+            string scope = _configuration["SpotifyService:Scope"];
 
             string spotifyAuthUrl = $"https://accounts.spotify.com/authorize?client_id={clientId}&response_type=code&redirect_uri={redirectUri}&scope={scope}";
             return Redirect(spotifyAuthUrl);
